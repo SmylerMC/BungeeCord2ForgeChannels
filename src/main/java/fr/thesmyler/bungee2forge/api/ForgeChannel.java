@@ -30,7 +30,9 @@ public interface ForgeChannel {
 	
 	/**
      * Sends the given packet to the given player
-     *
+     * <br>
+     * Logs an error if the packet class is not registered to this channel
+     * 
      * @param pkt - Packet to send
      * @param to  - Player to send the packet to
      */
@@ -38,6 +40,8 @@ public interface ForgeChannel {
     
     /**
      * Sends the given packet to the given players
+     * <br>
+     * Logs an error if the packet class is not registered to this channel
      *
      * @param pkt - Packet to send
      * @param to  - Players to send the packet to
@@ -46,14 +50,16 @@ public interface ForgeChannel {
     
     /**
      * Sends the given packet to the given server
-     *
+     * <br>
+     * Logs an error if the packet class is not registered to this channel
+     * 
      * @param pkt - Packet to send
      * @param to  - Server to send the packet to
      */
     void send(ForgePacket pkt, Server to);
     
     /**
-     * Registers a packet class
+     * Registers a packet class, overriding any existing registration with the same discriminator
      *
      * @param discriminator - The discriminator to use when sending this packet
      * @param clazz         - the {@link IForgePacket} implementing class
