@@ -15,15 +15,16 @@ import net.md_5.bungee.api.connection.Server;
 public class ForgeChannelImplementation implements ForgeChannel {
 	
 	private final String name;
-	private ForgeChannelRegistry registry;
+	private final ForgeChannelRegistry registry;
 	
     private final Map<Integer, Class<? extends ForgePacket>> packetMap = new HashMap<>();
     private final Map<Class<? extends ForgePacket>, Integer> discriminatorMap = new HashMap<>();
     
     private Logger logger;
 	
-	ForgeChannelImplementation(String name) {
+	ForgeChannelImplementation(String name, ForgeChannelRegistry registry) {
 		this.name = name;
+		this.registry = registry;
 	}
 
 	@Override

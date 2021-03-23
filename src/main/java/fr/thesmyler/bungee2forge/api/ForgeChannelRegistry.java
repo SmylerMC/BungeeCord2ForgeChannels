@@ -1,5 +1,7 @@
 package fr.thesmyler.bungee2forge.api;
 
+import fr.thesmyler.bungee2forge.imp.ForgeChannelRegistryImplementation;
+
 /**
  * Publicly facing Forge channel registry
  * 
@@ -8,12 +10,15 @@ package fr.thesmyler.bungee2forge.api;
  */
 public abstract class ForgeChannelRegistry {
 	
+	private static ForgeChannelRegistry instance;
+	
 	/**
 	 * 
 	 * @return the forge registry singleton
 	 */
 	public static ForgeChannelRegistry instance() {
-		return null; //TODO instance()
+		if(instance == null) instance = new ForgeChannelRegistryImplementation();
+		return instance;
 	}
 	
 	/**
