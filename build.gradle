@@ -6,7 +6,7 @@ plugins {
 
 sourceCompatibility = 1.8
 
-version = "1.0.0"
+version = "0.1.0"
 group "fr.thesmyler"
 
 repositories {
@@ -20,9 +20,21 @@ repositories {
 
 }
 
-
 dependencies {
 
     implementation group: "net.md-5", name: "bungeecord-api", version: "1.16-R0.5-SNAPSHOT"
 
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'plugin.yml'
+        expand 'version': project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'plugin.yml'
+    }
 } 

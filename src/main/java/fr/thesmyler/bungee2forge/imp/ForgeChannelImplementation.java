@@ -9,9 +9,12 @@ import fr.thesmyler.bungee2forge.api.ForgeChannelRegistry;
 import fr.thesmyler.bungee2forge.api.ForgePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
+//TODO Make sure channel name is valid
 public class ForgeChannelImplementation implements ForgeChannel {
 	
 	private final String name;
@@ -20,7 +23,7 @@ public class ForgeChannelImplementation implements ForgeChannel {
     private final Map<Integer, Class<? extends ForgePacket>> packetMap = new HashMap<>();
     private final Map<Class<? extends ForgePacket>, Integer> discriminatorMap = new HashMap<>();
     
-    private Logger logger;
+    private final Logger logger = ProxyServer.getInstance().getLogger();
 	
 	ForgeChannelImplementation(String name, ForgeChannelRegistry registry) {
 		this.name = name;
@@ -96,6 +99,60 @@ public class ForgeChannelImplementation implements ForgeChannel {
 	public synchronized void deregisterAllPackets() {
 		this.discriminatorMap.clear();
 		this.packetMap.clear();
+	}
+	
+	synchronized boolean process(byte[] data, Connection sender, Connection receiver) {
+        try {
+        	
+        	// Setup variables
+            ByteBuf buffer = Unpooled.copiedBuffer(data);
+            int discriminator = buffer.readByte();
+            ProxiedPlayer player;
+            Server server;
+            boolean player2server = true;
+            
+            // Cast sender and receiver to player and server
+            if (sender instanceof ProxiedPlayer && receiver instanceof Server) {
+                player = (ProxiedPlayer) sender;
+                server = (Server) receiver;
+                player2server = true;
+            } else if (sender instanceof Server && receiver instanceof ProxiedPlayer) {
+                player = (ProxiedPlayer) receiver;
+                server = (Server) sender;
+                player2server = false;
+            } else {
+                this.logger.warning(
+                        "Got an unknow combination of sender/receiver in Forge channel " + this.name + " channel. " +
+                        "Sender " + sender.getClass() +
+                        ", Receiver: " + receiver.getClass() +
+                        ", Packet discriminator " + discriminator);
+                return false;
+            }
+            
+            // Create packet instance and decode the data
+            Class<? extends ForgePacket> clazz = packetMap.get(discriminator);
+            if (clazz == null) {
+                if (player2server) {
+                    throw new PacketEncodingException("Received an unregistered packet from player" + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + " for server" + server.getInfo().getName() + "! Discriminator: " + discriminator);
+                } else {
+                    throw new PacketEncodingException("Received an unregistered packet from server " + server.getInfo().getName() + " for player " + player.getName() + "/" + player.getUniqueId() + "/" + player.getSocketAddress() + "! Discriminator: " + discriminator);
+                }
+            }
+            ForgePacket packetHandler = clazz.newInstance();
+            packetHandler.decode(buffer);
+            
+            // Process packet
+            if (player2server) {
+                return packetHandler.processFromClient(this.name, player, server);
+            } else {
+                return packetHandler.processFromServer(this.name, server, player);
+            }
+            
+        } catch (Exception e) {
+            this.logger.warning("Failed to process a Forge packet!");
+            e.printStackTrace();
+            return false;
+        }
 	}
 	
     private byte[] encode(ForgePacket pkt) throws PacketEncodingException {

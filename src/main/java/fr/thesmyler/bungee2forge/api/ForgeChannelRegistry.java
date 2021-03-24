@@ -1,6 +1,7 @@
 package fr.thesmyler.bungee2forge.api;
 
 import fr.thesmyler.bungee2forge.imp.ForgeChannelRegistryImplementation;
+import net.md_5.bungee.api.plugin.Listener;
 
 /**
  * Publicly facing Forge channel registry
@@ -8,17 +9,14 @@ import fr.thesmyler.bungee2forge.imp.ForgeChannelRegistryImplementation;
  * @author SmylerMC
  *
  */
-public abstract class ForgeChannelRegistry {
-	
-	private static ForgeChannelRegistry instance;
+public abstract class ForgeChannelRegistry implements Listener {
 	
 	/**
 	 * 
 	 * @return the forge registry singleton
 	 */
 	public static ForgeChannelRegistry instance() {
-		if(instance == null) instance = new ForgeChannelRegistryImplementation();
-		return instance;
+		return ForgeChannelRegistryImplementation.INSTANCE;
 	}
 	
 	/**
@@ -63,4 +61,5 @@ public abstract class ForgeChannelRegistry {
 	 * @param channel - A channel instance to deregister
 	 */
 	public abstract void deregister(ForgeChannel channel);
+	
 }
