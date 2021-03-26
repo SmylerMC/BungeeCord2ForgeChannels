@@ -18,10 +18,11 @@ public class ForgeChannelRegistryImplementation extends ForgeChannelRegistry {
 
 	@Override
 	public synchronized ForgeChannel get(String name) {
-		ForgeChannel channel = this.getExisting(name);
+		ForgeChannelImplementation channel = (ForgeChannelImplementation) this.getExisting(name);
 		if(channel == null) {
 			channel = new ForgeChannelImplementation(name, this);
 			ProxyServer.getInstance().registerChannel(name);
+			this.channels.put(name, channel);
 		}
 		return channel;
 	}
@@ -52,9 +53,11 @@ public class ForgeChannelRegistryImplementation extends ForgeChannelRegistry {
 	}
 	
 	@EventHandler
-	public void onPluginMessage(PluginMessageEvent event) {
+	public synchronized void onPluginMessage(PluginMessageEvent event) {
 		ForgeChannelImplementation channel = this.channels.get(event.getTag());
-		if(channel != null && channel.process(event.getData(), event.getSender(), event.getReceiver())) event.setCancelled(true);
+		if(channel != null &&
+				channel.process(event.getData(), event.getSender(), event.getReceiver()))
+			event.setCancelled(true);
 	}
 	
 	public void registerChannelsToBungee(Plugin plugin) {

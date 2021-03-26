@@ -84,5 +84,21 @@ public interface ForgeChannel {
      * Deregisters all packet classes
      */
     void deregisterAllPackets();
+    
+    /**
+     * Indicates if the given discriminator has a packet class registered
+     * 
+     * @param discriminator
+     * @return true if a packet class has been registered for this discriminator
+     */
+    boolean isDiscriminatorRegistered(int discriminator);
+    
+    /**
+     * Indicates if a given class is registered as a packet
+     * 
+     * @param clazz
+     * @return true if this class is registered
+     */
+    boolean isRegisteredPacket(Class<? extends ForgePacket> clazz);
 
 }

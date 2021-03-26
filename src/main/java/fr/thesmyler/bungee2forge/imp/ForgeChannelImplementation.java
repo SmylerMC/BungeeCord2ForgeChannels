@@ -14,7 +14,6 @@ import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 
-//TODO Make sure channel name is valid
 public class ForgeChannelImplementation implements ForgeChannel {
 	
 	private final String name;
@@ -26,6 +25,7 @@ public class ForgeChannelImplementation implements ForgeChannel {
     private final Logger logger = ProxyServer.getInstance().getLogger();
 	
 	ForgeChannelImplementation(String name, ForgeChannelRegistry registry) {
+		if(name == null || name.length() > 20) throw new IllegalArgumentException("Invalid channel name (should be at most 20 chars long)");
 		this.name = name;
 		this.registry = registry;
 	}
@@ -73,6 +73,7 @@ public class ForgeChannelImplementation implements ForgeChannel {
 	@Override
 	public synchronized void registerPacket(int discriminator, Class<? extends ForgePacket> clazz) {
 		ensureDiscriminatorIsValid(discriminator);
+		this.deregisterPacket(discriminator);
 		this.discriminatorMap.remove(clazz);
         this.packetMap.put(discriminator, clazz);
         this.discriminatorMap.put(clazz, discriminator);
@@ -169,6 +170,16 @@ public class ForgeChannelImplementation implements ForgeChannel {
 	private static void ensureDiscriminatorIsValid(int discriminator) {
 		if(discriminator < 0 || discriminator >= 256)
 			throw new IllegalArgumentException("Discriminator needs to satisfy 0 <= discriminator < 256");
+	}
+
+	@Override
+	public boolean isDiscriminatorRegistered(int discriminator) {
+		return this.packetMap.containsKey(discriminator);
+	}
+
+	@Override
+	public boolean isRegisteredPacket(Class<? extends ForgePacket> clazz) {
+		return this.discriminatorMap.containsKey(clazz);
 	}
 
 }

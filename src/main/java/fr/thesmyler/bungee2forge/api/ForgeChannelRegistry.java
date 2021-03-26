@@ -20,7 +20,9 @@ public abstract class ForgeChannelRegistry implements Listener {
 	}
 	
 	/**
-	 * Returns a channel with the given name, either by creating a new one or by returning the one from the registry if it already exists
+	 * Returns a channel with the given name,
+	 * either by creating a new one or by returning the one from the registry if it already exists.
+	 * Forge limits channels names to 20 characters.
 	 * 
 	 * @param name - Channel name, e.g. "pluginname:channelname" (bungee style) or "channelname" (forge style)
 	 * 
