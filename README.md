@@ -1,2 +1,2 @@
 # BungeeCord2ForgeChannels
-Small library to shade into a BungeeCord plugin when comunication with a MinecraftForge mod is needed 
+Allows communicating with Forge mods from a Bungee proxy. Can be used by either relying on it as a plugin dependency, in which case it needs to be installed as a BungeeCord plugin, or simply shaded in your own plugin's jar.
