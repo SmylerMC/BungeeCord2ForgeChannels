@@ -2,3 +2,4 @@ name: Bungee2ForgeChannels
 main: fr.thesmyler.bungee2forge.BungeeToForgePlugin
 version: ${version}
 author: SmylerMC
+depends: []
