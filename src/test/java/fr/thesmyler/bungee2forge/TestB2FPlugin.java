@@ -30,7 +30,7 @@ public class TestB2FPlugin {
 	public static PacketTest lastFromClient;
 	public static PacketTest lastFromServer;
 	
-	@Before public void setupTestEnvirronment() {
+	@Before public void setupTestEnvironment() {
 		TestSetup.ensureTestEnvironementSetup();
 		this.testChannel = ForgeChannelRegistry.instance().get("test");
 		this.testChannel.deregisterAllPackets();
@@ -60,7 +60,7 @@ public class TestB2FPlugin {
 				super.sendData(channel, data);
 				ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
 				buf.writeBytes(data);
-				// Since we are manually decoding this, we need to read the discriminator ourself
+				// Since we are manually decoding this, we need to read the discriminator on our own
 				buf.readByte();
 				received.decode(buf);
 			}
@@ -78,14 +78,14 @@ public class TestB2FPlugin {
 		
 		PluginMessageEvent event = new PluginMessageEvent(p, s, this.testChannel.name(), this.testEncodedPacket);
 		ForgeChannelRegistryImplementation.INSTANCE.onPluginMessage(event);
-		Assert.assertEquals(event.isCancelled(), true);
+		Assert.assertTrue(event.isCancelled());
 		Assert.assertEquals(this.testPacket.testInt, lastFromClient.testInt);
 		Assert.assertEquals(this.testPacket.testLong, lastFromClient.testLong);
 		Assert.assertEquals(this.testPacket.testString, lastFromClient.testString);
 		
 		event = new PluginMessageEvent(s, p, this.testChannel.name(), this.testEncodedPacket);
 		ForgeChannelRegistryImplementation.INSTANCE.onPluginMessage(event);
-		Assert.assertEquals(event.isCancelled(), false);
+		Assert.assertFalse(event.isCancelled());
 		Assert.assertEquals(this.testPacket.testInt, lastFromServer.testInt);
 		Assert.assertEquals(this.testPacket.testLong, lastFromServer.testLong);
 		Assert.assertEquals(this.testPacket.testString, lastFromServer.testString);
@@ -123,7 +123,7 @@ public class TestB2FPlugin {
 	@Test public void testChannelRegistration() {
 		ForgeChannel channel1 = ForgeChannelRegistry.instance().get("channel1");
 		ForgeChannel channel2 = ForgeChannelRegistry.instance().get("channel2");
-		Assert.assertTrue(channel1 == ForgeChannelRegistry.instance().get(channel1.name()));
+		Assert.assertSame(channel1, ForgeChannelRegistry.instance().get(channel1.name()));
 		Assert.assertFalse(ForgeChannelRegistry.instance().exists("channel3"));
 		Assert.assertTrue(ForgeChannelRegistry.instance().exists("channel2"));
 		Assert.assertTrue(channel2.isRegistered());

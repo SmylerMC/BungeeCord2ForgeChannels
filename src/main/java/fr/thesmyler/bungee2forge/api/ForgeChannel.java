@@ -5,8 +5,8 @@ import net.md_5.bungee.api.connection.Server;
 
 
 /**
- * Implements a Forge plugin channel. Encodes, decodes, receives and dispatches {@link IForgePacket}.
- * Takes care of adding discrimators at the beginning of packets.
+ * Implements a Forge plugin channel. Encodes, decodes, receives and dispatches {@link ForgePacket}.
+ * Takes care of adding discriminators at the beginning of packets.
  *
  * @author SmylerMC
  */
@@ -20,7 +20,7 @@ public interface ForgeChannel {
     String name();
     
     /**
-     * Indicates whether or not this channel is registered.
+     * Indicates whether this channel is registered.
      * <br>
      * A channel that is not registered has been removed from the registry and using it will throw {@link IllegalStateException}
      * 
@@ -33,8 +33,8 @@ public interface ForgeChannel {
      * <br>
      * Logs an error if the packet class is not registered to this channel
      * 
-     * @param pkt - Packet to send
-     * @param to  - Player to send the packet to
+     * @param pkt Packet to send
+     * @param to  Player to send the packet to
      */
     void send(ForgePacket pkt, ProxiedPlayer to);
     
@@ -43,8 +43,8 @@ public interface ForgeChannel {
      * <br>
      * Logs an error if the packet class is not registered to this channel
      *
-     * @param pkt - Packet to send
-     * @param to  - Players to send the packet to
+     * @param pkt Packet to send
+     * @param to  Players to send the packet to
      */
     void send(ForgePacket pkt, ProxiedPlayer... to);
     
@@ -53,30 +53,30 @@ public interface ForgeChannel {
      * <br>
      * Logs an error if the packet class is not registered to this channel
      * 
-     * @param pkt - Packet to send
-     * @param to  - Server to send the packet to
+     * @param pkt Packet to send
+     * @param to  Server to send the packet to
      */
     void send(ForgePacket pkt, Server to);
     
     /**
      * Registers a packet class, overriding any existing registration with the same discriminator
      *
-     * @param discriminator - The discriminator to use when sending this packet
-     * @param clazz         - the {@link IForgePacket} implementing class
+     * @param discriminator The discriminator to use when sending this packet
+     * @param clazz         the {@link ForgePacket} implementing class
      */
     void registerPacket(int discriminator, Class<? extends ForgePacket> clazz);
     
     /**
      * Deregisters the packet class with the given discriminator
      *
-     * @param discriminator - The packet discriminator
+     * @param discriminator The packet discriminator
      */
     void deregisterPacket(int discriminator);
     
     /**
      * Deregisters a packet class
      *
-     * @param clazz - The packet class
+     * @param clazz The packet class
      */
     void deregisterPacket(Class<? extends ForgePacket> clazz);
     
@@ -88,7 +88,7 @@ public interface ForgeChannel {
     /**
      * Indicates if the given discriminator has a packet class registered
      * 
-     * @param discriminator
+     * @param discriminator a packet discriminator to check
      * @return true if a packet class has been registered for this discriminator
      */
     boolean isDiscriminatorRegistered(int discriminator);
@@ -96,7 +96,7 @@ public interface ForgeChannel {
     /**
      * Indicates if a given class is registered as a packet
      * 
-     * @param clazz
+     * @param clazz a class to check
      * @return true if this class is registered
      */
     boolean isRegisteredPacket(Class<? extends ForgePacket> clazz);

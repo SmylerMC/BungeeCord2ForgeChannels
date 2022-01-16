@@ -14,23 +14,23 @@ public interface ForgePacket {
     /**
      * Encode the packet's content in the buffer, excluding discriminator
      *
-     * @param buf
+     * @param buf a buffer to write to
      */
     void encode(ByteBuf buf);
 
     /**
      * Decode the packet's content from the buffer, excluding discriminator
      *
-     * @param buf
+     * @param buf a buffer to read from
      */
     void decode(ByteBuf buf);
 
     /**
      * Process a packet sent from a server to a client
      *
-     * @param channel
-     * @param fromServer
-     * @param toPlayer
+     * @param channel    the channel this message is circulating on
+     * @param fromServer the server this packet is coming from
+     * @param toPlayer   the player this packet is going to
      * @return true if the packet should be stopped from reaching the client
      */
     default boolean processFromServer(String channel, Server fromServer, ProxiedPlayer toPlayer) {
@@ -40,9 +40,9 @@ public interface ForgePacket {
     /**
      * Process a packet sent from a client to a server
      *
-     * @param channel
-     * @param fromPlayer
-     * @param toServer
+     * @param channel    the channel this message is circulating on
+     * @param fromPlayer the player this packet is coming from
+     * @param toServer   the server this packet is going to
      * @return true if the packet should be stopped from reaching the server
      */
     default boolean processFromClient(String channel, ProxiedPlayer fromPlayer, Server toServer) {
